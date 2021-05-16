@@ -13,7 +13,7 @@
         "backend":
         [{
             "host": [
-                "http://localhost:3001/"
+                "ec2-54-169-216-147.ap-southeast-1.compute.amazonaws.com:3001/"
             ],
             "extra_config": {
                 "github.com/devopsfaith/krakend/http": {

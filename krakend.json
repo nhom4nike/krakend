@@ -3,35 +3,81 @@
   
     "endpoints": [
     {
-        "endpoint": "/iam",
+        "endpoint": "/test-iam/{resourceId}",
         "extra_config": {
            
             "github.com/devopsfaith/krakend/proxy": {
                 "sequential": true
+            },
+            "github.com/devopsfaith/krakend-jose/validator": {
+                "alg": "HS256",
+                "kid":"e2b8d2f2-b26f-4683-bcd4-3afb2fc2fd52",
+                "disable_jwk_security": true,
+                "jwk-url": "http://54.169.216.147:3001/key.json"
             }
         },
+        "headers_to_pass":[  
+            "*"
+      ],
         "backend":
         [{
+            "method": "POST",
+            "headers_to_pass":[  
+                "*"
+          ],
             "host": [
-                "http://localhost:3001/"
+                "http://54.169.216.147:3001/"
             ],
+            "url_pattern": "/authorization?resourceId={resourceId}&operations=READ,SIGN",
             "extra_config": {
                 "github.com/devopsfaith/krakend/http": {
-                    "return_error_details": "backend_iam"
+                    "return_error_details": "backend_authorization"
                 }
+               
             }
         },{
+            "method": "GET",
             "host": [
-                "http://localhost:3000/"
+                "https://api.04-nike.tk"
             ],
+            "url_pattern": "/user",
             "extra_config": {
                 "github.com/devopsfaith/krakend/http": {
-                    "return_error_details": "backend_b"
+                    "return_error_details": "backend_user"
                 }
             }
         }
         
         ]
         
-    }]
+    },
+    {
+        "endpoint": "/protected/resource",
+        "extra_config": {
+            "github.com/devopsfaith/krakend-jose/validator": {
+                "alg": "HS256",
+                "kid":"e2b8d2f2-b26f-4683-bcd4-3afb2fc2fd52",
+                "disable_jwk_security": true,
+                "jwk-url": "http://54.169.216.147:3001/key.json"
+            }
+        },
+        "backend": [
+            {
+                "headers_to_pass":[  
+                    "*"
+              ],
+                "host": [
+                    "https://api.04-nike.tk"
+                ],
+            "url_pattern": "/user",
+            "extra_config": {
+                "github.com/devopsfaith/krakend/http": {
+                    "return_error_details": "backend_authorization"
+                }
+               
+            }
+            }
+        ]
+    }
+]
 }
